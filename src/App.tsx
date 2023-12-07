@@ -15,8 +15,7 @@ import LoginAdmin from "./pages/adminPages/LoginAdmin.tsx";
 import HomeAdmin from "./pages/adminPages/HomeAdmin.tsx";
 import HomeBarber from "./pages/berberPages/HomeBarber.tsx";
 import { Navigate } from "react-router-dom";
-//dodat je komentar u githubu
-//dodato iz lokalnog repozitoriuma
+
 
 function App() {
   const loggedIn = localStorage.getItem("isLoggedIn")
