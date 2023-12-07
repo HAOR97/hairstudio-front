@@ -43,6 +43,8 @@ function BookingLayout() {
     }
   }, [user]);
 
+  console.log(ready)
+  
   if (!ready) {
     return (
       <div className="flex justify-center items-center h-screen">
