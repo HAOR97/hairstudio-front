@@ -16,6 +16,7 @@ import HomeAdmin from "./pages/adminPages/HomeAdmin.tsx";
 import HomeBarber from "./pages/berberPages/HomeBarber.tsx";
 import { Navigate } from "react-router-dom";
 //promenjeno u githubu
+//promena 2 u githubu
 
 function App() {
   const loggedIn = localStorage.getItem("isLoggedIn")
