@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { BookingContext } from "../context/bookingContext";
 import { useContext, useEffect } from "react";
 import { CircularProgress } from "@mui/material";
-
+import { UserContext } from "../context/userContext";
 
 function BookingOverview() {
   const adresa = "Skadarska 3,Belgrade";
@@ -15,10 +15,62 @@ function BookingOverview() {
     },
   ];
 
+  const {
+    service,
+    staff,
+    time,
+    stage,
+    suma,
+    loading,
+    setSuma,
+    date,
+    id_salon,
+  } = useContext(BookingContext);
 
-  const { service, staff, time, stage, suma, loading, setSuma } =
-    useContext(BookingContext);
+  const { user } = useContext(UserContext);
 
+  const handleClick = async () => {
+    //handle just work for last step stage 4
+
+    if (stage == 4) {
+      const fetchData = async () => {
+        try {
+          const response = await fetch("http://127.0.0.1:8000/booking/create", {
+            method: "POST",
+            body: JSON.stringify({
+              id_provide: service.map((s) => s.id).toString(), //number
+              id_frizer: staff.id, //number
+              id_salons: id_salon, //number
+              id_user: user.id, //number
+              date: date, //string
+              time: time.time, //string
+            }),
+            mode: 'cors',
+            headers: {
+              "Content-Type": "application/json",
+              Accept: "application/json",
+            },
+          });
+          if (!response.ok) {
+            throw new Error("Network  response was not ok");
+          }
+          console.log(response);
+        } catch {
+          console.log("error fetching data,error");
+        }
+      };
+
+      fetchData();
+    }
+  };
+
+  // console.log(
+  //   service.map(s=>s.id).toString(),
+  //   staff.id,
+  //   id_salon,
+  //   user.id,
+  //   date,
+  //   time.time)
   return (
     <div className="flex flex-col  border border-black-500 rounded-lg p-4 space-y-4 ">
       <div className="flex items-center ">
@@ -113,10 +165,11 @@ function BookingOverview() {
             ? "/booking/time"
             : stage == 3 && time
             ? "/booking/confirm"
-            : "/"
+            : window.location.pathname
         }
       >
         <button
+          onClick={handleClick}
           disabled={!loading ? false : true}
           className={
             !loading

@@ -10,8 +10,8 @@ import { convertDateYYMMDD } from "../../utils/convertDateFormat.tsx";
 
 
 function BookingTimePage() {
+  const {setDate} = useContext(BookingContext)
   const { setStage, id_salon ,staff } = useContext(BookingContext);
-  const [selectDate,setSelectDate] = useState<null | string>(null)
   const [isLoading,setIsLoading] = useState(true)
   const [reserved,setReserved] = useState(null)
 
@@ -22,17 +22,19 @@ function BookingTimePage() {
   const handleDatePicker = async (date) => {
 
     const newDate = convertDateYYMMDD(date)
-    setSelectDate(newDate)
-
-
+    setReserved(null)
+    
     try{
       let response = await fetch(`http://127.0.0.1:8000/api/salon/barbers/booking/${id_salon}/${staff.id}/${newDate}`)
-
+      
       if (!response.ok) {
         throw new Error("Network  response was not ok");
       }
       const result = await response.json()
-      setReserved(result.barber[0].times.split(","))
+      
+
+      setDate(newDate)
+      setReserved(result.barber[0].time.split(",").map(el => el.trim()))
       setIsLoading(false)
     }
     catch(error){
@@ -41,8 +43,6 @@ function BookingTimePage() {
     }
     
   }
-  
-
   return (
     <div className="space-y-5">
       <BookingNav title="Select time" />
@@ -54,7 +54,7 @@ function BookingTimePage() {
         </LocalizationProvider>
       </div>
       <div>
-        {reserved && <BookingTime isLoading={isLoading} reserved={reserved} />}
+        {reserved && <BookingTime  isLoading={isLoading} reserved={reserved} />}
       </div>
 
     </div>

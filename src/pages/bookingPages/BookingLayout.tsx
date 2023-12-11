@@ -42,8 +42,6 @@ function BookingLayout() {
       navigate("/login");
     }
   }, [user]);
-
-  console.log(ready)
   
   if (!ready) {
     return (
@@ -57,6 +55,7 @@ function BookingLayout() {
     localStorage.clear();
     setUser(null);
   };
+
   return (
     <div className="flex flex-col p-7 max-w-7xl justify-center mx-auto">
       <div className="flex flex-row w-full justify-between mb-7">

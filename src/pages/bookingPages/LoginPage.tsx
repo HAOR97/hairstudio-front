@@ -28,7 +28,7 @@ function LoginPage() {
         JSON.stringify(data)
         );
         localStorage.setItem("isLoggedIn", "true");
-        setUser(data);
+        setUser(result.dataUser[0]);
         navigate("/booking");
       } else {
         //ako nije dobra sifra ili email ovo se radi samo i vraca se
