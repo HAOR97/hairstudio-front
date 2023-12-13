@@ -4,14 +4,27 @@ import { Outlet } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext.tsx";
 import { BookingContext } from "../../context/bookingContext.tsx";
-import { CircularProgress } from "@mui/material";
+import { Box, CircularProgress, Modal, Typography } from "@mui/material";
 import Profile from "../../components/Profile.tsx";
+import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
+
+const style = {
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
+  width: 400,
+  bgcolor: "background.paper",
+  boxShadow: 24,
+  p: 4,
+  borderRadius: "5px",
+};
 
 function BookingLayout() {
   const { ready, user, setUser } = useContext(UserContext);
-  const { stage, setTime, setStaff, time, staff, service } =
+  const { stage, setService,setDate, setTime, setStaff, time, staff, service } =
     useContext(BookingContext);
-
+  const [open, setOpen] = useState(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const loggedIn = localStorage.getItem("isLoggedIn");
   //restet state per fazes
@@ -20,9 +33,11 @@ function BookingLayout() {
   useEffect(() => {
     if (stage === 1) {
       setTime(null);
+      setDate(null);
       setStaff(null);
     } else if (stage === 2) {
       setTime(null);
+      setDate(null);
       if (!service) {
         navigate("/booking");
       }
@@ -42,6 +57,7 @@ function BookingLayout() {
       navigate("/login");
     }
   }, [user]);
+  
   if (!ready) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -55,9 +71,37 @@ function BookingLayout() {
     setUser(null);
   };
 
+  const handleSucesRes = () => {
+    setService(null)
+    setOpen(false)
+    setShowProfile(true)
+    navigate("/booking")
+  }
+
 
   return (
     <div className="flex flex-col p-7 max-w-7xl justify-center mx-auto">
+      
+      <Modal
+        open={open}
+        //onClose={handleClose}
+        aria-labelledby="modal-modal-title"
+        aria-describedby="modal-modal-description"
+      >
+        <Box sx={style}>
+          <div className="flex flex-col justify-center items-center rounded">
+            <div className="flex space-y-4 gap-5 flex-col bg-white md:w-96 md:h-max w-screen h-screen p-5 rounded-xl ">
+              <div className="flex flex-row">
+              <h1 className="font-bold text-2xl">Successfull reservation! </h1>
+              <CheckCircleOutlineIcon className="ml-2" color="success" fontSize="large"></CheckCircleOutlineIcon>
+              </div>
+              <button onClick={handleSucesRes}>Continue</button>
+            </div>
+          </div>
+        </Box>
+      </Modal>
+
+
       <div className="flex flex-row w-full justify-between mb-7">
         <div
           className={
@@ -112,7 +156,7 @@ function BookingLayout() {
               <Outlet />
             </div>
             <div className="flex flex-col md:w-4/12 w-full mt-10">
-              <BookingOverview />
+              <BookingOverview setOpen={setOpen} />
             </div>
           </>
         )}

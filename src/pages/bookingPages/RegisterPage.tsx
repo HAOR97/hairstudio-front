@@ -122,6 +122,9 @@ function RegisterPage() {
           {inputs.map((input) => (
             <InputRegister key={input.id} {...input} value={values[input.name]} onChange={onChange} />
           ))}
+          <Link to={"/login"}>
+            <span className="text-blue-700 text-sm"> Imate nalog?</span>
+          </Link>
           <button className="">Continue</button>
         </form>
       </div>
