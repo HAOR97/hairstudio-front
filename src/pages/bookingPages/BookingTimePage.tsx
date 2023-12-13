@@ -7,38 +7,44 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import BookingTime from '../../components/BookingTime.tsx'
 import { convertDateYYMMDD } from "../../utils/convertDateFormat.tsx";
-
+import { prva,druga } from "../../mock/smene.tsx";
 
 function BookingTimePage() {
-  const {setDate} = useContext(BookingContext)
+  const {setDate,setTime} = useContext(BookingContext)
   const { setStage, id_salon ,staff } = useContext(BookingContext);
   const [isLoading,setIsLoading] = useState(true)
   const [reserved,setReserved] = useState(null)
+  const [shift,setShift] = useState(prva)
 
   useEffect(() => {
     setStage(3);
-  });
+    setTime(null)
+  },[]);
 
   const handleDatePicker = async (date) => {
 
     const newDate = convertDateYYMMDD(date)
     setReserved(null)
-    
+    setDate(newDate)
     try{
       let response = await fetch(`http://127.0.0.1:8000/api/salon/barbers/booking/${id_salon}/${staff.id}/${newDate}`)
-      
-      if (!response.ok) {
+
+      if(!response.ok){
         throw new Error("Network  response was not ok");
       }
-      const result = await response.json()
-      
 
-      setDate(newDate)
-      setReserved(result.barber[0].time.split(",").map(el => el.trim()))
+      const result = await response.json()
+      const termins = [];
+      result.barber.forEach(el => {
+          const time = el.time.split(',').map(el=> el.trim())
+          termins.push(...time)
+      })
+      setReserved(termins)
       setIsLoading(false)
     }
     catch(error){
-      console.log("error fetching data,error");
+      console.log(error);
+      setReserved([])
       setIsLoading(false)
     }
     
@@ -54,7 +60,7 @@ function BookingTimePage() {
         </LocalizationProvider>
       </div>
       <div>
-        {reserved && <BookingTime  isLoading={isLoading} reserved={reserved} />}
+        {reserved && <BookingTime shift={shift} setShift={setShift}  isLoading={isLoading} reserved={reserved} />}
       </div>
 
     </div>

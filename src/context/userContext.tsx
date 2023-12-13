@@ -10,6 +10,7 @@ type User = {
 
 };
 
+
 type UserContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
@@ -24,12 +25,13 @@ export const UserContext = createContext<UserContextType | null>(null);
 
 export function UserContextProvider({ children }: UserContextProp) {
   const [user, setUser] = useState<User | null>(null);
+  const [reservations,setReservations] = useState([])
   const [ready, setReady] = useState(true);
 
   
 
   return (
-    <UserContext.Provider value={{ user, setUser, ready }}>
+    <UserContext.Provider value={{ user, setUser, ready, reservations,setReservations }}>
       {children}
     </UserContext.Provider>
   );

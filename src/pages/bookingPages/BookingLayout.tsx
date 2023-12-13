@@ -42,7 +42,6 @@ function BookingLayout() {
       navigate("/login");
     }
   }, [user]);
-  
   if (!ready) {
     return (
       <div className="flex justify-center items-center h-screen">
@@ -55,6 +54,7 @@ function BookingLayout() {
     localStorage.clear();
     setUser(null);
   };
+
 
   return (
     <div className="flex flex-col p-7 max-w-7xl justify-center mx-auto">

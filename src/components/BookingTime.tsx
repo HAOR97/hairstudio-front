@@ -1,15 +1,22 @@
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { BookingContext } from "../context/bookingContext";
-import { times } from "../mock/smene";
 import { CircularProgress } from "@mui/material";
+import { computeFreeTermins } from "../utils/computeTermins";
+import { computeTerminsToReserv } from "../utils/computeTermins";
 
-function BookingTime({ reserved, isloading }) {
-  const { time, setTime } = useContext(BookingContext);
-
+function BookingTime({ reserved, isloading, shift, setShift }) {
+  const { time, setTime, service } = useContext(BookingContext);
+  const [filterShift,setFilterShift] = useState([{}])
+  
   const handleTime = (e, t) => {
     e.preventDefault();
-    setTime(t);
+    setTime(computeTerminsToReserv(t,service));
   };
+
+  useEffect(() => {
+    setFilterShift(computeFreeTermins(shift, service, reserved))
+  },[reserved,shift])
+
 
   return (
     <>
@@ -20,10 +27,8 @@ function BookingTime({ reserved, isloading }) {
             <CircularProgress></CircularProgress>
           </div>
         ) : (
-          times.map((t, index) => {
-            if (reserved.includes(t.time)) {
-              return;
-            }
+          filterShift.map((t, index) => {
+            
 
             let active = false;
             if (time) {
@@ -37,7 +42,8 @@ function BookingTime({ reserved, isloading }) {
                     ? "border-2 border-black-500 rounded-lg bg-white text-black hover:bg-stone-100 border-blue-500"
                     : "border-2 border-black-500 rounded-lg bg-white text-black hover:bg-stone-100 "
                 }
-                onClick={(e) => handleTime(e, t)}
+                
+                onClick={(e) => handleTime(e, {...t})}
               >
                 {t.time}
               </button>

@@ -4,38 +4,35 @@ import { BookingContext } from "../context/bookingContext";
 import { useContext, useEffect } from "react";
 import { CircularProgress } from "@mui/material";
 import { UserContext } from "../context/userContext";
+import { useNavigate } from "react-router-dom";
+import { startEndTime } from "../utils/convertDateFormat";
 
 function BookingOverview() {
   const adresa = "Skadarska 3,Belgrade";
-  const services = [
-    {
-      name: "Sisanje klasicno",
-      time: 30,
-      price: 1500,
-    },
-  ];
 
   const {
     service,
+    setService,
     staff,
     time,
     stage,
     suma,
     loading,
-    setSuma,
     date,
     id_salon,
   } = useContext(BookingContext);
 
-  const { user } = useContext(UserContext);
+  const { user,setReservations } = useContext(UserContext);
+  const navigate = useNavigate();
 
   const handleClick = async () => {
     //handle just work for last step stage 4
 
     if (stage == 4) {
       const fetchData = async () => {
+        console.log(date)
         try {
-          const response = await fetch("http://127.0.0.1:8000/booking/create", {
+          const response = await fetch("http://127.0.0.1:8000/api/booking/create", {
             method: "POST",
             body: JSON.stringify({
               id_provide: service.map((s) => s.id).toString(), //number
@@ -43,7 +40,7 @@ function BookingOverview() {
               id_salons: id_salon, //number
               id_user: user.id, //number
               date: date, //string
-              time: time.time, //string
+              time: time.time //string
             }),
             mode: 'cors',
             headers: {
@@ -54,7 +51,9 @@ function BookingOverview() {
           if (!response.ok) {
             throw new Error("Network  response was not ok");
           }
-          console.log(response);
+          //const result = response.json()
+          setService(null)
+          navigate("/booking")
         } catch {
           console.log("error fetching data,error");
         }
@@ -63,14 +62,7 @@ function BookingOverview() {
       fetchData();
     }
   };
-
-  // console.log(
-  //   service.map(s=>s.id).toString(),
-  //   staff.id,
-  //   id_salon,
-  //   user.id,
-  //   date,
-  //   time.time)
+//console.log(time)
   return (
     <div className="flex flex-col  border border-black-500 rounded-lg p-4 space-y-4 ">
       <div className="flex items-center ">
@@ -143,7 +135,13 @@ function BookingOverview() {
                     d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 012.25-2.25h13.5A2.25 2.25 0 0121 7.5v11.25m-18 0A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75m-18 0v-7.5A2.25 2.25 0 015.25 9h13.5A2.25 2.25 0 0121 11.25v7.5m-9-6h.008v.008H12v-.008zM12 15h.008v.008H12V15zm0 2.25h.008v.008H12v-.008zM9.75 15h.008v.008H9.75V15zm0 2.25h.008v.008H9.75v-.008zM7.5 15h.008v.008H7.5V15zm0 2.25h.008v.008H7.5v-.008zm6.75-4.5h.008v.008h-.008v-.008zm0 2.25h.008v.008h-.008V15zm0 2.25h.008v.008h-.008v-.008zm2.25-4.5h.008v.008H16.5v-.008zm0 2.25h.008v.008H16.5V15z"
                   />
                 </svg>
-                <span className="text-base">{time.time}</span>
+                <span className="text-base">
+                  
+                  {
+                  
+                  startEndTime(time.time)
+                  }
+                  </span>
               </div>
             )}
           </div>
