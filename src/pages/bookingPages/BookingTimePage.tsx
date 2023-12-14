@@ -9,13 +9,15 @@ import BookingTime from "../../components/BookingTime.tsx";
 import { convertDateYYMMDD } from "../../utils/convertDateFormat.tsx";
 import { prva } from "../../mock/smene.tsx";
 import { CircularProgress } from "@mui/material";
+import {DataPickerType} from "../../utils/convertDateFormat.tsx"
 
 function BookingTimePage() {
   const { date, setDate, setTime } = useContext(BookingContext);
   const { setStage, id_salon, staff } = useContext(BookingContext);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [reserved, setReserved] = useState<string[] | null>(null);
-  const [shift, setShift] = useState<{ time: string; }[]>(prva);
+  const [shift] = useState<{ time: string; }[]>(prva);
+
 
   interface response {
     time: string;
@@ -29,8 +31,11 @@ function BookingTimePage() {
     
   }, [setStage,setTime,setDate]);
 
-  const handleDatePicker = async (date: Date | null) => {
+  const handleDatePicker = async (date: DataPickerType | null) => {
 
+    if(!date){
+      return console.log("date je null")
+    }
     const newDate = convertDateYYMMDD(date);
     setReserved(null);
     setDate(newDate);
