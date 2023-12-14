@@ -3,51 +3,51 @@ import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
-
 function LoginPage() {
   const { user, setUser } = useContext(UserContext);
   const [mail, setMail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
-  
-  
+
   const fetchLogin = async (data) => {
-    let result = await fetch("http://127.0.0.1:8000/api/login", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-    if (result.ok) {
-      result = await result.json();
-      localStorage.setItem(
-        "user-info",
-        JSON.stringify(data)
-        );
+   
+    try {
+      const respond = await fetch("http://127.0.0.1:8000/api/login", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      if (!respond.ok) {
+        setError(true);
+        throw new Error();
+      } else {
+        const result = await respond.json();
+        localStorage.setItem("user-info", JSON.stringify(data));
         localStorage.setItem("isLoggedIn", "true");
         setUser(result.dataUser[0]);
         navigate("/booking");
-      } else {
-        //ako nije dobra sifra ili email ovo se radi samo i vraca se
-        setError(true);
       }
+    } catch (err) {
+      console.log(err);
     }
-    
-    useEffect(()=>{
-      if(localStorage.getItem('isLoggedIn')){
-        fetchLogin(JSON.parse(`${localStorage.getItem('user-info')}`))
-      }
-    },[])
-    
-    const handleLogin = async (
-      e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-      ) => {
-        e.preventDefault();
-        
-        fetchLogin({ email: mail, password: password })
+  
+  };
+  useEffect(() => {
+    if (localStorage.getItem("isLoggedIn")) {
+      fetchLogin(JSON.parse(`${localStorage.getItem("user-info")}`));
+    }
+  }, []);
+
+  const handleLogin = async (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
+    e.preventDefault();
+
+    fetchLogin({ email: mail, password: password });
   };
 
   return (

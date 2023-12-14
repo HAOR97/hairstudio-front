@@ -29,7 +29,7 @@ function BookingTimePage() {
     setReserved(null);
     setDate(newDate);
     try {
-      let response = await fetch(
+      const response = await fetch(
         `http://127.0.0.1:8000/api/salon/barbers/booking/${id_salon}/${staff.id}/${newDate}`
       );
 
@@ -51,7 +51,6 @@ function BookingTimePage() {
       setIsLoading(false);
     }
   };
-  console.log(date);
   return (
     <div className="space-y-5">
       <BookingNav title="Select time" />

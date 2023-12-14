@@ -32,7 +32,7 @@ function BookingTime({ reserved, isloading, shift, setShift }) {
 
             let active = false;
             if (time) {
-              active = t.time == time.time ? true : false;
+              active = t.time == time.time.split(',')[0] ? true : false;
             }
             return (
               <button

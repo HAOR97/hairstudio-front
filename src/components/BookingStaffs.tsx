@@ -3,13 +3,13 @@ import { BookingContext } from "../context/bookingContext";
 import { CircularProgress } from "@mui/material";
 
 function BookingStaffs() {
-  const { staff, setStaff, id_salon, setLoading, loading } =
+  const { staff, setStaff, id_salon } =
     useContext(BookingContext);
   const [staffs, setStaffs] = useState(null);
 
   useEffect(() => {
     const fetchDate = async () => {
-      //setLoading(true)
+
       try {
         const response = await fetch(`http://127.0.0.1:8000/api/salon/barbers/${id_salon}`);
         if (!response.ok) {
@@ -17,10 +17,9 @@ function BookingStaffs() {
         }
         const result = await response.json();
         setStaffs(result.barber)
-        //setLoading(false);
+
       } catch (error) {
-        console.log("error fetching data,error");
-        //setLoading(false);
+        console.log(error);
       }
     };
     fetchDate();

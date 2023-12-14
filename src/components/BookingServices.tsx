@@ -8,26 +8,6 @@ function BookingServices() {
   const [services,setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
-  // type Service = {
-  //   id: number;
-  //   name: string;
-  //   time: number;
-  //   price: number;
-  //   index?: number;
-  // };
-  // const services: Service[] = [
-  //   {
-  //     name: "Sisanje klasicno",
-  //     time: 30,
-  //     price: 1500,
-  //   },
-  //   {
-  //     name: "Brijanje",
-  //     time: 15,
-  //     price: 500,
-  //   },
-  // ];
-
   useEffect(() => {
     const fetchDate = async () => {
       try {
@@ -36,8 +16,9 @@ function BookingServices() {
           throw new Error("Network  response was not ok");
         }
         const result = await response.json();
-        let servicesTest;
-        servicesTest = result.provide;
+        
+        const servicesTest = result.provide;
+
         servicesTest.forEach((service) => {
           service.price = parseInt(service.price);
           const [hours, minutes, seconds] = service.time.split(":").map(Number);
@@ -46,7 +27,7 @@ function BookingServices() {
         setServices(servicesTest)
         setIsLoading(false);
       } catch (error) {
-        console.log("error fetching data,error");
+        console.log(error);
         setIsLoading(false);
       }
     };

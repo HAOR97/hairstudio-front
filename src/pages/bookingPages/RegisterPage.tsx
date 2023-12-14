@@ -23,8 +23,8 @@ function RegisterPage() {
     password: "",
   });
   const navigate = useNavigate();
-
-
+  const [error, setError] = useState(false);
+  const [errorText,setErrorText] = useState('')
   const inputs = [
     {
       id: 1,
@@ -40,27 +40,26 @@ function RegisterPage() {
       id: 2,
       name: "surname",
       type: "text",
-      errorMessage:
-        "Username should be 3-16 characters!",
+      errorMessage: "Username should be 3-16 characters!",
       label: "Username",
       pattern: "^.{3,16}$",
       required: true,
     },
     {
-        id: 3,
-        name: "email",
-        type: "email",
-        errorMessage: "It should be a valid email address!",
-        label: "Email",
-        required: true,
+      id: 3,
+      name: "email",
+      type: "email",
+      errorMessage: "It should be a valid email address!",
+      label: "Email",
+      required: true,
     },
     {
-        id: 4,
-        name: "phone",
-        type: "tel",
-        errorMessage: "It should be a valid phone!",
-        label: "Phone",
-        required: true,
+      id: 4,
+      name: "phone",
+      type: "tel",
+      errorMessage: "It should be a valid phone!",
+      label: "Phone",
+      required: true,
     },
     {
       id: 5,
@@ -77,19 +76,37 @@ function RegisterPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-       let result = await fetch("http://127.0.0.1:8000/api/singin", {
-         method: "POST",
-         body: JSON.stringify(values),
-         headers: {
-           "Content-Type": "application/json",
-           Accept: "application/json",
-         },
-       });
-       result = await result.json();
-       localStorage.setItem("user-info", JSON.stringify(result));
-       if (result.status == 200) {
-         navigate("/login");
-       }
+    try {
+      const respond = await fetch("http://127.0.0.1:8000/api/singin", {
+        method: "POST",
+        body: JSON.stringify(values),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      if (!respond.ok) {
+        console.log(respond)
+        if( respond.status == 401 ||  respond.status == 422){
+          setError(true)
+          setErrorText('Something information is wrong or the email already exists !')
+        }
+        if(respond.status >= 500 || respond.status == 442){
+          setError(true)
+          setErrorText('Something is wrong with server !')
+        }
+        
+        throw new Error();
+      } else {
+        const result = await respond.json();
+        localStorage.setItem("user-info", JSON.stringify(result));
+        if (result.status == 200) {
+          navigate("/login");
+        }
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   const onChange = (e) => {
@@ -99,7 +116,10 @@ function RegisterPage() {
   return (
     <div>
       <div className="bg-gray-200 w-screen h-screen flex justify-center items-center rounded">
-        <form onSubmit={handleSubmit} className="flex space-y-4 flex-col bg-white md:w-96 md:h-max w-screen h-screen p-8 rounded-xl ">
+        <form
+          onSubmit={handleSubmit}
+          className="flex space-y-4 flex-col bg-white md:w-96 md:h-max w-screen h-screen p-8 rounded-xl "
+        >
           <div className="flex flex-row justify-between mb-4">
             <label className="text-2xl">Create account</label>
             <Link to={"/"}>
@@ -120,11 +140,24 @@ function RegisterPage() {
             </Link>
           </div>
           {inputs.map((input) => (
-            <InputRegister key={input.id} {...input} value={values[input.name]} onChange={onChange} />
+            <InputRegister
+              key={input.id}
+              {...input}
+              value={values[input.name]}
+              onChange={onChange}
+            />
           ))}
-          <Link to={"/login"}>
-            <span className="text-blue-700 text-sm"> Imate nalog?</span>
-          </Link>
+          {error && (
+            <span className="text-red-500 text-sm ">
+              {errorText}
+            </span>
+          )}
+          <div>
+            <span className="text-sm"> Imate nalog?</span>
+            <Link to={"/login"}>
+              <span className="text-blue-700 text-sm"> Ulogujte se ovde!</span>
+            </Link>
+          </div>
           <button className="">Continue</button>
         </form>
       </div>
