@@ -10,7 +10,8 @@ import {
 } from "@mui/material";
 import { barbarsAll } from "../../mock/barbers";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+
+type deleteBarberType = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,id:number)=>void
 
 const style = {
   position: "absolute",
@@ -36,7 +37,7 @@ function HomeAdmin() {
   const [password, setPassword] = useState<string>("");
   const [years, setYears] = useState<number | null>(null);
 
-  const handleNewBarber = (e) => {
+  const handleNewBarber = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
     if (
       firstName == "" ||
@@ -57,7 +58,7 @@ function HomeAdmin() {
     }
   };
 
-  const deleteBarber = (e, id) => {
+  const deleteBarber:deleteBarberType = (e, id ) => {
     e.preventDefault();
     const filterBarbers = barbars.filter((b) => b.id != id);
     setBarbars(filterBarbers);

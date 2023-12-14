@@ -1,6 +1,6 @@
-import { ReactNode, createContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useState } from "react";
 
-type User = {
+export type User = {
   name: string;
   surname: string;
   id:number;
@@ -15,24 +15,33 @@ type User = {
 type UserContextType = {
   user: User | null;
   setUser: React.Dispatch<React.SetStateAction<User | null>>;
-  ready: boolean; 
+  reservations: [];
+  setReservations:React.Dispatch<React.SetStateAction<[]>>;
 };
+
+const initialUserContext: UserContextType = {
+  user: null,
+  setUser: () => {},
+
+  reservations: [],
+  setReservations: () => [],
+};
+
 
 type UserContextProp = {
   children: ReactNode;
 };
 
-export const UserContext = createContext<UserContextType | null>(null);
+export const UserContext = createContext<UserContextType >(initialUserContext);
 
 export function UserContextProvider({ children }: UserContextProp) {
   const [user, setUser] = useState<User | null>(null);
-  const [reservations,setReservations] = useState([])
-  const [ready, setReady] = useState(true);
+  const [reservations,setReservations] = useState<[]>([])
 
   
 
   return (
-    <UserContext.Provider value={{ user, setUser, ready, reservations,setReservations }}>
+    <UserContext.Provider value={{ user, setUser, reservations,setReservations }}>
       {children}
     </UserContext.Provider>
   );

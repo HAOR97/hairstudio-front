@@ -2,29 +2,40 @@ import { useContext, useEffect } from "react";
 import { BookingContext } from "../context/bookingContext";
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
+import { Service } from "../context/bookingContext";
+
+type Servic = {
+  index: number;
+  id: number;
+  name: string;
+  time: any;
+  price: any;
+};
 
 function BookingServices() {
-  const { service, setService,id_salon } = useContext(BookingContext);
-  const [services,setServices] = useState([]);
+  const { service, setService } = useContext(BookingContext);
+  const [services, setServices] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchDate = async () => {
       try {
-        const response = await fetch(`http://127.0.0.1:8000/api/salon/provide/1`);
+        const response = await fetch(
+          `http://127.0.0.1:8000/api/salon/provide/1`
+        );
         if (!response.ok) {
           throw new Error("Network  response was not ok");
         }
         const result = await response.json();
-        
+
         const servicesTest = result.provide;
 
-        servicesTest.forEach((service) => {
+        servicesTest.forEach((service: Servic) => {
           service.price = parseInt(service.price);
           const [hours, minutes, seconds] = service.time.split(":").map(Number);
           service.time = hours * 3600 + minutes * 60 + seconds;
         });
-        setServices(servicesTest)
+        setServices(servicesTest);
         setIsLoading(false);
       } catch (error) {
         console.log(error);

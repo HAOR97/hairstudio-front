@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function AdminLogin({userType} : string) {
+function AdminLogin({userType} : {userType:string}) {
   const [mail, setMail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const navigate = useNavigate();

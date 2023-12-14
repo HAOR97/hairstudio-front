@@ -5,11 +5,11 @@ import { BookingContext } from "../../context/bookingContext";
 
 
 function BookingConfirmPage() {
-  const {stage,setStage} = useContext(BookingContext)
+  const {setStage} = useContext(BookingContext)
   
   useEffect(()=>{
     setStage(4)
-  },[])
+  },[setStage])
 
   return (
     <div>

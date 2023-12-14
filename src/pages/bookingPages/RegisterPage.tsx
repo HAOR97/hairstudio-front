@@ -1,8 +1,8 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import "./register.css";
-import InputRegister from "../../components/inputRegister";
 import { useNavigate } from "react-router-dom";
+import InputRegister from "../../components/InputRegister";
 
 type User = {
   name: string;
@@ -12,6 +12,17 @@ type User = {
   email: string;
   password: string;
 };
+
+export type Input = {
+  id: number;
+  name: string;
+  type: "text" | "email" | "tel" | "password"; // Assuming these are the supported types
+  errorMessage: string;
+  label: string;
+  pattern?: string; // Optional pattern property
+  autoComplete?: string; // Optional autoComplete property
+  required: boolean;
+}
 
 function RegisterPage() {
   const [values, setValues] = useState<User>({
@@ -24,8 +35,8 @@ function RegisterPage() {
   });
   const navigate = useNavigate();
   const [error, setError] = useState(false);
-  const [errorText,setErrorText] = useState('')
-  const inputs = [
+  const [errorText, setErrorText] = useState("");
+  const inputs: Input[] = [
     {
       id: 1,
       name: "name",
@@ -66,16 +77,16 @@ function RegisterPage() {
       name: "password",
       type: "password",
       errorMessage:
-        "Password should be 8-20 characters and include at least 1 letter, 1 number and 1 special character!",
+        "Password must contain number, one uppercase and lowercase letter, and at least 8 or more characters!",
       label: "Password",
+      pattern: "(?=.*d)(?=.*[a-z])(?=.*[A-Z]).{8,}",
       autoComplete: "on",
       required: true,
     },
   ];
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e:  React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       const respond = await fetch("http://127.0.0.1:8000/api/singin", {
         method: "POST",
@@ -86,16 +97,17 @@ function RegisterPage() {
         },
       });
       if (!respond.ok) {
-        console.log(respond)
-        if( respond.status == 401 ||  respond.status == 422){
-          setError(true)
-          setErrorText('Something information is wrong or the email already exists !')
+        if ( respond.status < 500 && respond.status > 400) {
+          setError(true);
+          setErrorText(
+            "Something information is wrong or the email already exists !"
+          );
         }
-        if(respond.status >= 500 || respond.status == 442){
-          setError(true)
-          setErrorText('Something is wrong with server !')
+        if (respond.status >= 500 ) {
+          setError(true);
+          setErrorText("Something is wrong with server !");
         }
-        
+
         throw new Error();
       } else {
         const result = await respond.json();
@@ -109,7 +121,8 @@ function RegisterPage() {
     }
   };
 
-  const onChange = (e) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+
     setValues({ ...values, [e.target.name]: e.target.value });
   };
 
@@ -143,15 +156,10 @@ function RegisterPage() {
             <InputRegister
               key={input.id}
               {...input}
-              value={values[input.name]}
               onChange={onChange}
             />
           ))}
-          {error && (
-            <span className="text-red-500 text-sm ">
-              {errorText}
-            </span>
-          )}
+          {error && <span className="text-red-500 text-sm ">{errorText}</span>}
           <div>
             <span className="text-sm"> Imate nalog?</span>
             <Link to={"/login"}>

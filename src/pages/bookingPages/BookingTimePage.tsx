@@ -7,27 +7,38 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import BookingTime from "../../components/BookingTime.tsx";
 import { convertDateYYMMDD } from "../../utils/convertDateFormat.tsx";
-import { prva, druga } from "../../mock/smene.tsx";
-import { UserContext } from "../../context/userContext.tsx";
+import { prva } from "../../mock/smene.tsx";
 import { CircularProgress } from "@mui/material";
 
 function BookingTimePage() {
   const { date, setDate, setTime } = useContext(BookingContext);
-  const { user } = useContext(UserContext);
   const { setStage, id_salon, staff } = useContext(BookingContext);
-  const [isLoading, setIsLoading] = useState(true);
-  const [reserved, setReserved] = useState(null);
-  const [shift, setShift] = useState(prva);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [reserved, setReserved] = useState<string[] | null>(null);
+  const [shift, setShift] = useState<{ time: string; }[]>(prva);
+
+  interface response {
+    time: string;
+    [key: string]: string | number;
+  }
 
   useEffect(() => {
     setStage(3);
-    setTime(null);
-  }, []);
+    setTime(null)
+    setDate(null)
+    
+  }, [setStage,setTime,setDate]);
 
-  const handleDatePicker = async (date) => {
+  const handleDatePicker = async (date: Date | null) => {
+
     const newDate = convertDateYYMMDD(date);
     setReserved(null);
     setDate(newDate);
+
+    //zbog typescripta
+    if(!staff){
+      return console.log("staff is null");
+    }
     try {
       const response = await fetch(
         `http://127.0.0.1:8000/api/salon/barbers/booking/${id_salon}/${staff.id}/${newDate}`
@@ -38,8 +49,8 @@ function BookingTimePage() {
       }
 
       const result = await response.json();
-      const termins = [];
-      result.barber.forEach((el) => {
+      const termins: string[]  = [];
+      result.barber.forEach((el: response) => {
         const time = el.time.split(",").map((el) => el.trim());
         termins.push(...time);
       });
@@ -51,6 +62,7 @@ function BookingTimePage() {
       setIsLoading(false);
     }
   };
+  
   return (
     <div className="space-y-5">
       <BookingNav title="Select time" />
@@ -78,7 +90,7 @@ function BookingTimePage() {
           <BookingTime
             shift={shift}
             setShift={setShift}
-            isLoading={isLoading}
+            load={isLoading}
             reserved={reserved}
           />
         )}

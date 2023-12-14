@@ -20,9 +20,9 @@ const DEFAULT_ORDERBY = "time";
 
 function HomeBarber() {
   const [active, setActive] = useState(true);
-  const [termi, setTermi] = useState(terminsTest);
+  const [termi] = useState(terminsTest);
   const [selectDate, setSelectDate] = useState(dayjs());
-  const [orderBy, setOrderBy] = useState(DEFAULT_ORDERBY);
+  const [orderBy] = useState(DEFAULT_ORDERBY);
   const [order, setOrder] = useState("asc");
   const [profile, setProfile] = useState({
     firstName: "Jane",

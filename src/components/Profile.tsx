@@ -1,6 +1,7 @@
 import imgProfile from '../assets/profile.png'
+import { User } from '../context/userContext'
 
-function Profile({profil,setProfile}) {
+function Profile({profil}: {profil:User}) {
   return (
     <div className="flex flex-col p-5 w-80 border rounded-md m-auto justify-center items-center gap-5">
         <img

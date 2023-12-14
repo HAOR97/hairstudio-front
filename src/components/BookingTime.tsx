@@ -4,7 +4,7 @@ import { CircularProgress } from "@mui/material";
 import { computeFreeTermins } from "../utils/computeTermins";
 import { computeTerminsToReserv } from "../utils/computeTermins";
 
-function BookingTime({ reserved, isloading, shift, setShift }) {
+function BookingTime({ reserved, load, shift, setShift }) {
   const { time, setTime, service } = useContext(BookingContext);
   const [filterShift,setFilterShift] = useState([{}])
   
@@ -22,7 +22,7 @@ function BookingTime({ reserved, isloading, shift, setShift }) {
     <>
       <span>Select time:</span>
       <div className="grid grid-cols-3 gap-2">
-        {isloading ? (
+        {load ? (
           <div className="pt-10 flex align-middle justify-center">
             <CircularProgress></CircularProgress>
           </div>

@@ -1,46 +1,51 @@
 import { Link } from "react-router-dom";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
 function LoginPage() {
-  const { user, setUser } = useContext(UserContext);
+  const { setUser } = useContext(UserContext);
   const [mail, setMail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [error, setError] = useState(false);
   const navigate = useNavigate();
 
-  const fetchLogin = async (data) => {
+type loginType = {
+  email:string;
+  password:string;
+}
+
+  const fetchLogin =useCallback(async (data: loginType) => {
+     try {
+       const respond = await fetch("http://127.0.0.1:8000/api/login", {
+         method: "POST",
+         body: JSON.stringify(data),
+         headers: {
+           "Content-Type": "application/json",
+           Accept: "application/json",
+         },
+       });
+       if (!respond.ok) {
+         setError(true);
+         throw new Error();
+       } else {
+         const result = await respond.json();
+         localStorage.setItem("user-info", JSON.stringify(data));
+         localStorage.setItem("isLoggedIn", "true");
+         setUser(result.dataUser[0]);
+         navigate("/booking");
+       }
+     } catch (err) {
+       console.log(err);
+     }
    
-    try {
-      const respond = await fetch("http://127.0.0.1:8000/api/login", {
-        method: "POST",
-        body: JSON.stringify(data),
-        headers: {
-          "Content-Type": "application/json",
-          Accept: "application/json",
-        },
-      });
-      if (!respond.ok) {
-        setError(true);
-        throw new Error();
-      } else {
-        const result = await respond.json();
-        localStorage.setItem("user-info", JSON.stringify(data));
-        localStorage.setItem("isLoggedIn", "true");
-        setUser(result.dataUser[0]);
-        navigate("/booking");
-      }
-    } catch (err) {
-      console.log(err);
-    }
-  
-  };
+   },[navigate,setUser])  
+
   useEffect(() => {
     if (localStorage.getItem("isLoggedIn")) {
       fetchLogin(JSON.parse(`${localStorage.getItem("user-info")}`));
     }
-  }, []);
+  }, [fetchLogin]);
 
   const handleLogin = async (
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>

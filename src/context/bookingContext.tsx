@@ -1,22 +1,30 @@
-import React, { ReactNode, createContext, useEffect, useState } from "react";
+import { ReactNode, createContext, useEffect, useState } from "react";
 
-type Service = {
+export type Servic = {
   index: number;
+  id:number;
   name: string;
   time: number;
   price: number;
-}[];
+}
 
-type Staff = {
+export type Service = Servic[];
+
+export type Staff = {
   index:number;
   name: string;
+  id:string;
 };
 
 type Time = {
   time: string;
 };
 
+type BookingContextProp = {
+  children: ReactNode;
+};
 type BookingContextType = {
+  id_salon : number;
   service: Service | null;
   setService: React.Dispatch<React.SetStateAction<Service | null>>;
   staff: Staff | null;
@@ -31,17 +39,30 @@ type BookingContextType = {
   setSuma: React.Dispatch<React.SetStateAction<number>>;
   loading: boolean;
   setLoading: React.Dispatch<React.SetStateAction<boolean>>;
-  id_salona : string
 };
 
-type BookingContextProp = {
-  children: ReactNode;
+const initialBookingContext: BookingContextType = {
+  id_salon: 0, 
+  service: null,
+  setService: () => {},
+  staff: null,
+  setStaff: () => {},
+  time: null,
+  setTime: () => {},
+  date: null,
+  setDate: () => {},
+  stage: 0,
+  setStage: () => {},
+  suma: 0,
+  setSuma: () => {},
+  loading: false,
+  setLoading: () => {},
 };
 
-export const BookingContext = createContext<BookingContextType | null>(null);
+export const BookingContext = createContext<BookingContextType >(initialBookingContext);
 
 export function BookingContextProvider({ children }: BookingContextProp) {
-  const id_salon: number | null = 1;
+  const id_salon: number = 1;
   const [service, setService] = useState<Service | null>(null);
   const [staff, setStaff] = useState<Staff | null>(null);
   const [time, setTime] = useState<Time | null>(null);
@@ -63,8 +84,8 @@ export function BookingContextProvider({ children }: BookingContextProp) {
     <BookingContext.Provider
       value={{
         date,
-        setDate,
         id_salon,
+        setDate,
         service,
         setService,
         staff,

@@ -1,18 +1,15 @@
 import imgLocal from "../assets/local.webp";
 import { Link } from "react-router-dom";
 import { BookingContext } from "../context/bookingContext";
-import { useContext, useEffect } from "react";
+import { useContext } from "react";
 import { CircularProgress } from "@mui/material";
 import { UserContext } from "../context/userContext";
-import { useNavigate } from "react-router-dom";
 import { startEndTime } from "../utils/convertDateFormat";
 
-function BookingOverview({setOpen}) {
+function BookingOverview({setOpen}:{setOpen:React.Dispatch<React.SetStateAction<boolean>>}) {
   const adresa = "Skadarska 3,Belgrade";
-
   const {
     service,
-    setService,
     staff,
     time,
     stage,
@@ -23,7 +20,7 @@ function BookingOverview({setOpen}) {
     id_salon,
   } = useContext(BookingContext);
 
-  const { user, setReservations } = useContext(UserContext);
+  const { user} = useContext(UserContext);
 
   const handleClick = async () => {
     //handle just work for last step stage 4
@@ -31,14 +28,12 @@ function BookingOverview({setOpen}) {
     if (stage == 4) {
       setLoading(true);
       const fetchData = async () => {
-        // console.log(
-          //   service.map((s) => s.id).toString(),
-          //   staff.id,
-          //   id_salon,
-          //   user.id,
-          //   date,
-          //   time.time,
-          // );
+
+        //ovo je zbog typeScripta
+        if (!service || !staff || !user || !time) {
+          return;
+        }
+
           try {
             const response = await fetch(
               "http://127.0.0.1:8000/api/booking/create",
@@ -61,8 +56,8 @@ function BookingOverview({setOpen}) {
               if (!response.ok) {
                 throw new Error("Network  response was not ok");
               }
-              const result = await response.json();
-              console.log(result);
+              //const result = await response.json();
+
               setLoading(false);
               setOpen(true)
             } catch {

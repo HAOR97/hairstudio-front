@@ -1,5 +1,5 @@
-import { Route, Routes, useNavigate } from "react-router-dom";
-import HomePage from "./pages/HomePage.js";
+import { Routes,Route } from "react-router-dom";
+import HomePage from "./pages/homePage/HomePage.js";
 import RegisterPage from "./pages/bookingPages/RegisterPage.js";
 import LoginPage from "./pages/bookingPages/LoginPage.js";
 import BookingLayot from "./pages/bookingPages/BookingLayout.tsx";
@@ -9,17 +9,14 @@ import BookingTimePage from "./pages/bookingPages/BookingTimePage.tsx";
 import BookingConfirmPage from "./pages/bookingPages/BookingConfirmPage.tsx";
 import { UserContextProvider } from "./context/userContext.tsx";
 import { BookingContextProvider } from "./context/bookingContext.tsx";
-import RolePage from "./pages/RolePage.tsx"
+import RolePage from "./pages/rolePage/RolePage.tsx"
 import LoginBarber from "./pages/berberPages/LoginBarber.tsx";
 import LoginAdmin from "./pages/adminPages/LoginAdmin.tsx";
 import HomeAdmin from "./pages/adminPages/HomeAdmin.tsx";
 import HomeBarber from "./pages/berberPages/HomeBarber.tsx";
-import { Navigate } from "react-router-dom";
-//promenjeno u githubu
-//promena 2 u githubu
 
-function App() {
-  const loggedIn = localStorage.getItem("isLoggedIn")
+
+function App(){
 
 
   return (
@@ -30,7 +27,6 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={
-              //loggedIn ?  <Navigate to="/booking" />:
               <LoginPage />} />
             <Route path="/booking" element={<BookingLayot />}>
               <Route index element={<BookingServicePage />} />

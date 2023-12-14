@@ -1,10 +1,10 @@
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import BookingOverview from "../../components/BookingOverview.tsx";
 import { Outlet } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext.tsx";
 import { BookingContext } from "../../context/bookingContext.tsx";
-import { Box, CircularProgress, Modal, Typography } from "@mui/material";
+import { Box, Modal } from "@mui/material";
 import Profile from "../../components/Profile.tsx";
 import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
 
@@ -21,15 +21,13 @@ const style = {
 };
 
 function BookingLayout() {
-  const { ready, user, setUser } = useContext(UserContext);
+  const { user, setUser } = useContext(UserContext);
   const { stage, setService,setDate, setTime, setStaff, time, staff, service } =
     useContext(BookingContext);
   const [open, setOpen] = useState(false);
   const [showProfile, setShowProfile] = useState<boolean>(false);
-  const loggedIn = localStorage.getItem("isLoggedIn");
   //restet state per fazes
   const navigate = useNavigate();
-
   useEffect(() => {
     if (stage === 1) {
       setTime(null);
@@ -50,21 +48,13 @@ function BookingLayout() {
         navigate("/booking/time");
       }
     }
-  }, [stage, time, navigate]);
+  }, [stage,staff,service,setTime,setDate,setStaff, navigate,time]);
 
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
-  }, [user]);
-  
-  if (!ready) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <CircularProgress />
-      </div>
-    );
-  }
+  }, [user,navigate]);
 
   const handleLogout = () => {
     localStorage.clear();
@@ -84,7 +74,6 @@ function BookingLayout() {
       
       <Modal
         open={open}
-        //onClose={handleClose}
         aria-labelledby="modal-modal-title"
         aria-describedby="modal-modal-description"
       >
