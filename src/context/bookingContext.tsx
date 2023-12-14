@@ -16,7 +16,7 @@ export type Staff = {
   id:string;
 };
 
-type Time = {
+export type Time = {
   time: string;
 };
 

@@ -3,18 +3,19 @@ import { BookingContext } from "../context/bookingContext";
 import { useState } from "react";
 import { CircularProgress } from "@mui/material";
 import { Service } from "../context/bookingContext";
+import { Servic } from "../context/bookingContext";
 
-type Servic = {
+type Servic2 = {
   index: number;
   id: number;
   name: string;
-  time: any;
-  price: any;
+  time: string;
+  price: string;
 };
 
 function BookingServices() {
   const { service, setService } = useContext(BookingContext);
-  const [services, setServices] = useState([]);
+  const [services, setServices] = useState<Service>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -27,15 +28,15 @@ function BookingServices() {
           throw new Error("Network  response was not ok");
         }
         const result = await response.json();
-
+        const serviceFinal: Servic[] = [];
         const servicesTest = result.provide;
-
-        servicesTest.forEach((service: Servic) => {
-          service.price = parseInt(service.price);
+        servicesTest.forEach((service: Servic2) => {
+          const newPrice = parseInt(service.price);
           const [hours, minutes, seconds] = service.time.split(":").map(Number);
-          service.time = hours * 3600 + minutes * 60 + seconds;
+          const newMinutes = hours * 3600 + minutes * 60 + seconds;
+          serviceFinal.push({ ...service, price: newPrice, time: newMinutes });
         });
-        setServices(servicesTest);
+        setServices(serviceFinal);
         setIsLoading(false);
       } catch (error) {
         console.log(error);
@@ -47,14 +48,13 @@ function BookingServices() {
 
   type addServiceProp = {
     e: React.MouseEvent<HTMLButtonElement, MouseEvent>;
-    s: Service;
+    s: Servic;
     index: number;
     active: boolean;
   };
 
   const addService = ({ e, s, index, active }: addServiceProp) => {
     e.preventDefault();
-
     s.index = index;
 
     if (!active) {
@@ -66,8 +66,14 @@ function BookingServices() {
       setService([s]);
       return;
     } else {
+
+      //zbog typescripta
+      if(!service){
+        return
+      }
+      
       const updatedService = service.filter(
-        (item: Service) => item.index !== index
+        (item: Servic) => item.index !== index
       );
       if (updatedService.length == 0) {
         setService(null);
@@ -85,7 +91,7 @@ function BookingServices() {
       ) : (
         services.map((s, index) => {
           const active = service
-            ? service.some((ser: Service) => ser.index === index)
+            ? service.some((ser: Servic) => ser.index === index)
             : false;
 
           return (

@@ -89,7 +89,6 @@ function BookingTimePage() {
         ) : (
           <BookingTime
             shift={shift}
-            setShift={setShift}
             load={isLoading}
             reserved={reserved}
           />

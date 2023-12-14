@@ -3,20 +3,39 @@ import { BookingContext } from "../context/bookingContext";
 import { CircularProgress } from "@mui/material";
 import { computeFreeTermins } from "../utils/computeTermins";
 import { computeTerminsToReserv } from "../utils/computeTermins";
+import { Time } from "../context/bookingContext";
 
-function BookingTime({ reserved, load, shift, setShift }) {
+type BookingTimeType = {
+  reserved: string[] | null;
+  load: boolean;
+  shift: Time[];
+};
+
+type handleTimeType = (
+  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  t: Time
+) => void;
+
+const BookingTime: React.FC<BookingTimeType> = ({ reserved, load, shift }) => {
   const { time, setTime, service } = useContext(BookingContext);
-  const [filterShift,setFilterShift] = useState([{}])
-  
-  const handleTime = (e, t) => {
+  const [filterShift, setFilterShift] = useState([{time:"test"}]);
+
+  const handleTime: handleTimeType = (e, t) => {
+    if (!service) {
+      return console.log("service je null");
+    }
     e.preventDefault();
-    setTime(computeTerminsToReserv(t,service));
+    setTime(computeTerminsToReserv(t, service));
   };
 
   useEffect(() => {
-    setFilterShift(computeFreeTermins(shift, service, reserved))
-  },[reserved,shift])
-
+    //ovo if je zbog typescripta
+    if (service && reserved) {
+      setFilterShift(computeFreeTermins(shift, service, reserved));
+    } else {
+      console.log("service ili reserved je null");
+    }
+  }, [reserved, shift, service]);
 
   return (
     <>
@@ -28,11 +47,12 @@ function BookingTime({ reserved, load, shift, setShift }) {
           </div>
         ) : (
           filterShift.map((t, index) => {
-            
+            console.log(t);
 
             let active = false;
-            if (time) {
-              active = t.time == time.time.split(',')[0] ? true : false;
+
+            if (time && time) {
+              active = t.time == time.time.split(",")[0] ? true : false;
             }
             return (
               <button
@@ -42,8 +62,7 @@ function BookingTime({ reserved, load, shift, setShift }) {
                     ? "border-2 border-black-500 rounded-lg bg-white text-black hover:bg-stone-100 border-blue-500"
                     : "border-2 border-black-500 rounded-lg bg-white text-black hover:bg-stone-100 "
                 }
-                
-                onClick={(e) => handleTime(e, {...t})}
+                onClick={(e) => handleTime(e, { ...t })}
               >
                 {t.time}
               </button>
@@ -53,6 +72,6 @@ function BookingTime({ reserved, load, shift, setShift }) {
       </div>
     </>
   );
-}
+};
 
 export default BookingTime;
