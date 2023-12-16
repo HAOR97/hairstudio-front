@@ -1,33 +1,30 @@
-export const terminsTest = {
-    title: "Termini",
-    termins: [
-      {
-        customer:"Marko Ilic",
-        date: "2-2-2022",
-        time: "9:15",
-        service: ["sisanje", "brada"],
-        term:1
-      },
-      {
-        date: "2-2-2022",
-        time: "10:30",
-        service: ["sisanje"],
-        customer:"Goran Voz",
-        term:6
-      },
-      {
-        date: "2-2-2022",
-        time: "9:30",
-        service: ["brada"],
-        customer:"Zoki Sumadinac",
-        term:2
-      },
-      {
-        date: "2-3-2022",
-        time: "14:30",
-        service: ["sisanje", "brada"],
-        customer:"Djorde Balasevic",
-        term:12
-      },
-    ],
-  };
+import { Reservations } from "../context/userContext";
+export const terminsTest: Reservations[] = [
+  {
+    id: 1,
+    id_salons: 1,
+    id_provide: 3,
+    id_user: 5,
+    id_frizer: 2,
+    date: "2-2-2022",
+    time: "9:30,10:00,13:15",
+  },
+  {
+    id: 2,
+    id_salons: 1,
+    id_provide: 4,
+    id_user: 3,
+    id_frizer: 6,
+    date: "2-2-2022",
+    time: "9:30,10:00,13:15",
+  },
+  {
+    id: 1,
+    id_salons: 1,
+    id_provide: 3,
+    id_user: 5,
+    id_frizer: 2,
+    date: "2-2-2022",
+    time: "9:30,10:00,13:15",
+  },
+];

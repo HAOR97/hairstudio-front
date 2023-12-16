@@ -47,7 +47,6 @@ const BookingTime: React.FC<BookingTimeType> = ({ reserved, load, shift }) => {
           </div>
         ) : (
           filterShift.map((t, index) => {
-            console.log(t);
 
             let active = false;
 

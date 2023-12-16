@@ -6,7 +6,11 @@ import { CircularProgress } from "@mui/material";
 import { UserContext } from "../context/userContext";
 import { startEndTime } from "../utils/convertDateFormat";
 
-function BookingOverview({setOpen}:{setOpen:React.Dispatch<React.SetStateAction<boolean>>}) {
+function BookingOverview({
+  setOpen,
+}: {
+  setOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) {
   const adresa = "Skadarska 3,Belgrade";
   const {
     service,
@@ -20,56 +24,62 @@ function BookingOverview({setOpen}:{setOpen:React.Dispatch<React.SetStateAction<
     id_salon,
   } = useContext(BookingContext);
 
-  const { user} = useContext(UserContext);
+  const { user, setReservations } = useContext(UserContext);
 
   const handleClick = async () => {
     //handle just work for last step stage 4
-    
+
     if (stage == 4) {
       setLoading(true);
       const fetchData = async () => {
-
         //ovo je zbog typeScripta
-        if (!service || !staff || !user || !time) {
-          return;
+        if (!service || !staff || !user || !time || !date) {
+          return console.log("fali neki podatak: service,staff,user,time");
         }
 
-          try {
-            const response = await fetch(
-              "http://127.0.0.1:8000/api/booking/create",
-              {
-                method: "POST",
-                body: JSON.stringify({
-                  id_provide: service.map((s) => s.id).toString(), //number
-                  id_frizer: staff.id, //number
-                  id_salons: id_salon, //number
-                  id_user: user.id, //number
-                  date: date, //string
-                  time: time.time, //string
-                }),
-                headers: {
-                  "Content-Type": "application/json",
-                  Accept: "application/json",
-                },
-              }
-              );
-              if (!response.ok) {
-                throw new Error("Network  response was not ok");
-              }
-              //const result = await response.json();
-
-              setLoading(false);
-              setOpen(true)
-            } catch {
-              console.log("error fetching data,error");
-              setLoading(false);
+        try {
+          const response = await fetch(
+            "http://127.0.0.1:8000/api/booking/create",
+            {
+              method: "POST",
+              body: JSON.stringify({
+                id_provide: service.map((s) => s.id).toString(), //number
+                id_frizer: staff.id, //number
+                id_salons: id_salon, //number
+                id_user: user.id, //number
+                date: date, //string
+                time: time.time, //string
+              }),
+              headers: {
+                "Content-Type": "application/json",
+                Accept: "application/json",
+              },
             }
-          };
+          );
+          if (!response.ok) {
+            throw new Error("Network  response was not ok");
+          }
+          //const result = await response.json();
+
+            setReservations(prevState => [...(prevState || []),{id: 9,
+              id_salons: id_salon,
+              id_user: user.id,
+              id_frizer: parseInt(staff.id),
+              date: date,
+              time: time.time,}]);
           
-          fetchData();
+          setLoading(false);
+          setOpen(true);
+        } catch {
+          console.log("error fetching data,error");
+          setLoading(false);
         }
       };
-      
+
+      fetchData();
+    }
+  };
+
   return (
     <div className="flex flex-col  border border-black-500 rounded-lg p-4 space-y-4 ">
       <div className="flex items-center ">
