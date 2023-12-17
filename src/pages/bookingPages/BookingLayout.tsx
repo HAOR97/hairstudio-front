@@ -76,7 +76,6 @@ function BookingLayout() {
     setShowProfile(true);
     navigate("/booking");
   };
-  console.log(reservations)
   return (
     <div className="flex flex-col p-7 max-w-7xl justify-center mx-auto">
       <Modal
@@ -101,6 +100,7 @@ function BookingLayout() {
         </Box>
       </Modal>
 
+    <div className="">
       <div className="flex flex-row w-full justify-between mb-7">
         <div
           className={
@@ -147,6 +147,8 @@ function BookingLayout() {
         </div>
       </div>
       <div>
+
+    </div>
         {showProfile ? (
           user && (
             <div className=" flex flex-col ">
@@ -159,7 +161,7 @@ function BookingLayout() {
             <div className="flex flex-col md:w-8/12 w-full">
               <Outlet />
             </div>
-            <div className="flex flex-col md:w-4/12 w-full mt-10">
+            <div className="flex flex-col md:w-4/12 w-full">
               <BookingOverview setOpen={setOpen} />
             </div>
           </div>

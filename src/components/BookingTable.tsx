@@ -49,7 +49,7 @@ const BookingTable = ({ reservations, show }: BookingTablePropType) => {
                     <TableCell align="center">
                       {r.date} / {startEndTime(r.time)}
                     </TableCell>
-                    <TableCell align="center">{r[`id_${show}`]}</TableCell>
+                    <TableCell align="center">{r.name_frizOrUser}</TableCell>
                     <TableCell align="center">
                       <button className="p-3">Delete</button>
                     </TableCell>

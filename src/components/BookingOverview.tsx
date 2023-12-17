@@ -66,7 +66,9 @@ function BookingOverview({
               id_user: user.id,
               id_frizer: parseInt(staff.id),
               date: date,
-              time: time.time,}]);
+              time: time.time,
+              name_frizOrUser: `${user.name} ${user.surname}`,
+            }]);
           
           setLoading(false);
           setOpen(true);
