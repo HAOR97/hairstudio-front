@@ -53,21 +53,29 @@ export function UserContextProvider({ children }: UserContextProp) {
       return
     }
     const fetchReservations = async()=>{
-      const respond = await fetch(`http://127.0.0.1:8000/api/booking/read/${user?.flag}/${user?.id}`)
-      const result = await respond.json()
-      console.log(result)
-      const allReservations = result.$bookingUser.map((b: fetchReservationsType)=>{
-        return({
-          id: parseInt(b.id_provide),
-          id_salons: 1,
-          id_user: b.id_user, 
-          id_frizer: b.id_frizer,
-          date: b.date,
-          time: b.time,
-          name_frizOrUser: `${b.barbers_table.name} ${b.barbers_table.surname}`,
+      try{
+        const respond = await fetch(`http://127.0.0.1:8000/api/booking/read/${user?.flag}/${user?.id}`)
+        if (!respond.ok) {
+          throw new Error();
+        }
+        const result = await respond.json()
+        const allReservations = result.$bookingUser.map((b: fetchReservationsType)=>{
+          return({
+            id: parseInt(b.id_provide),
+            id_salons: 1,
+            id_user: b.id_user, 
+            id_frizer: b.id_frizer,
+            date: b.date,
+            time: b.time,
+            name_frizOrUser: `${b.barbers_table.name} ${b.barbers_table.surname}`,
+          })
         })
-      })
-      setReservations(allReservations)
+        setReservations(allReservations)
+      }
+      catch(err){
+        console.log(err)
+        setReservations(null)
+      }
     }
     fetchReservations()
   },[user])  

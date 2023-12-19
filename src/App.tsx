@@ -9,12 +9,9 @@ import BookingTimePage from "./pages/bookingPages/BookingTimePage.tsx";
 import BookingConfirmPage from "./pages/bookingPages/BookingConfirmPage.tsx";
 import { UserContextProvider } from "./context/userContext.tsx";
 import { BookingContextProvider } from "./context/bookingContext.tsx";
-import RolePage from "./pages/rolePage/RolePage.tsx"
-import LoginBarber from "./pages/berberPages/LoginBarber.tsx";
-import LoginAdmin from "./pages/adminPages/LoginAdmin.tsx";
-import HomeAdmin from "./pages/adminPages/HomeAdmin.tsx";
-import HomeBarber from "./pages/berberPages/HomeBarber.tsx";
-
+import HomeAdmin from "./pages/administration/HomeAdmin.tsx";
+import HomeBarber from "./pages/administration/HomeBarber.tsx";
+import LoginAdministration from "./pages/administration/LoginAdministration.tsx";
 
 function App(){
 
@@ -34,12 +31,10 @@ function App(){
               <Route path="/booking/time" element={<BookingTimePage />} />
               <Route path="/booking/confirm" element={<BookingConfirmPage />} />
             </Route>
-            <Route path="/role" >
-              <Route index element={<RolePage />} />
-              <Route path="/role/barber/login" element={<LoginBarber />} />
-              <Route path="/role/barber/home" element={<HomeBarber />} />
-              <Route path="/role/admin/login" element={<LoginAdmin />} />
-              <Route path="/role/admin/home" element={<HomeAdmin />} />
+            <Route path="/administration" >
+              <Route index element={<LoginAdministration />} />
+              <Route path="/administration/staff" element={<HomeBarber />} />
+              <Route path="/administration/admin" element={<HomeAdmin />} />
             </Route> 
           </Routes>
         </UserContextProvider>

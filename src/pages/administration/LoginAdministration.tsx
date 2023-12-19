@@ -3,7 +3,7 @@ import { useContext, useEffect, useState,useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { UserContext } from "../../context/userContext";
 
-function LoginAdmin() {
+function LoginAdministration() {
   const { setUser } = useContext(UserContext);
   const [mail, setMail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -28,13 +28,25 @@ type loginType = {
        if (!respond.ok) {
          setError(true);
          throw new Error();
-       } else {
-         const result = await respond.json();
-         localStorage.setItem("user-info", JSON.stringify(data));
-         localStorage.setItem("isLoggedIn", "true");
-         setUser(result.dataUser[0]);
-         navigate("/booking");
+        } else {
+            const result = await respond.json();
+            if(result.dataUser[0].flag == "frizer"){
+                localStorage.setItem("admin-info", JSON.stringify(data));
+                localStorage.setItem("isLoggedInAdmin", "true");
+                setUser(result.dataUser[0]);
+                navigate("/administration/staff");
+            }
+            else if(result.dataUser[0].flag == "admin"){
+                localStorage.setItem("admin-info", JSON.stringify(data));
+                localStorage.setItem("isLoggedInAdmin", "true");
+                setUser(result.dataUser[0]);
+                navigate("/administration/admin");
+            }
+            else{
+                setError(true);
+                throw new Error();
        }
+        }
      } catch (err) {
        console.log(err);
      }
@@ -42,8 +54,8 @@ type loginType = {
    },[navigate,setUser])  
 
   useEffect(() => {
-    if (localStorage.getItem("isLoggedIn")) {
-      fetchLogin(JSON.parse(`${localStorage.getItem("user-info")}`));
+    if (localStorage.getItem("isLoggedInAdmin")) {
+      fetchLogin(JSON.parse(`${localStorage.getItem("admin-info")}`));
     }
   }, [fetchLogin]);
 
@@ -101,10 +113,6 @@ type loginType = {
             Wrong E-mail or password!
           </span>
         )}
-        <Link to={"/register"}>
-          <span className="text-sm">Prvi put ste kod nas?</span>
-          <span className="text-blue-700 text-sm"> Napravite nalog</span>
-        </Link>
         <button onClick={handleLogin} className="">
           Continue
         </button>
@@ -113,5 +121,4 @@ type loginType = {
   );
 }
 
-export default LoginAdmin;
-
+export default LoginAdministration;

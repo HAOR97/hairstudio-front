@@ -66,7 +66,8 @@ function BookingLayout() {
   }, [user, navigate]);
 
   const handleLogout = () => {
-    localStorage.clear();
+    localStorage.removeItem("user-info");
+    localStorage.removeItem("isLoggedIn");
     setUser(null);
   };
 

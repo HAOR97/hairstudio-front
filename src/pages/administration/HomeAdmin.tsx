@@ -9,9 +9,14 @@ import {
   TableBody,
 } from "@mui/material";
 import { barbarsAll } from "../../mock/barbers";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { useContext, useEffect, useState } from "react";
+import { UserContext } from "../../context/userContext.tsx";
 
-type deleteBarberType = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>,id:number)=>void
+type deleteBarberType = (
+  e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+  id: number
+) => void;
 
 const style = {
   position: "absolute",
@@ -36,8 +41,24 @@ function HomeAdmin() {
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [years, setYears] = useState<number | null>(null);
+  const { user, setUser } = useContext(UserContext);
+  const navigate = useNavigate();
 
-  const handleNewBarber = (e:React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+  useEffect(() => {
+    if (!user) {
+      navigate("/administration");
+    }
+  }, [user, navigate]);
+
+  const handleLogout = () => {
+    localStorage.removeItem("admin-info");
+    localStorage.removeItem("isLoggedInAdmin");
+    setUser(null);
+  };
+
+  const handleNewBarber = (
+    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
+  ) => {
     e.preventDefault();
     if (
       firstName == "" ||
@@ -58,7 +79,7 @@ function HomeAdmin() {
     }
   };
 
-  const deleteBarber:deleteBarberType = (e, id ) => {
+  const deleteBarber: deleteBarberType = (e, id) => {
     e.preventDefault();
     const filterBarbers = barbars.filter((b) => b.id != id);
     setBarbars(filterBarbers);
@@ -76,10 +97,7 @@ function HomeAdmin() {
           <div className="flex flex-col justify-center items-center rounded">
             <form className="flex space-y-4 flex-col bg-white md:w-96 md:h-max w-screen h-screen p-8 rounded-xl ">
               <div className="flex flex-row justify-end mb-4">
-                  <div
-                    onClick={handleClose}
-                    className="cursor-pointer p-0"
-                  >
+                <div onClick={handleClose} className="cursor-pointer p-0">
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
@@ -94,7 +112,7 @@ function HomeAdmin() {
                       d="M6 18L18 6M6 6l12 12"
                     />
                   </svg>
-                  </div>
+                </div>
               </div>
               <div className="flex flex-row justify-between">
                 <div className="mr-1 w-6/12">
@@ -153,12 +171,64 @@ function HomeAdmin() {
           </div>
         </Box>
       </Modal>
-      <h1 className="text-6xl text-center p-3 pb-6">Admin</h1>
-      <div className="flex flex-row-reverse ">
+      
+
+
+
+
+
+      <div className="flex flex-row w-full justify-between mb-7">
+        
+        <div className=" p-2 cursor-pointer mb-3 w-max rounded-md hover:bg-stone-100" onClick={handleOpen}>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke-width="1.5"
+            stroke="currentColor"
+            data-slot="icon"
+            className="w-8 h-8"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
+            />
+          </svg>
+        </div>
+        <h1 className="font-bold text-4xl">Admin</h1>
+        <div
+          className=" p-2 cursor-pointer mb-3 w-max rounded-md hover:bg-stone-100"
+         onClick={handleLogout}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            strokeWidth={1.5}
+            stroke="currentColor"
+            className="w-8 h-8"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              d="M15.75 9V5.25A2.25 2.25 0 0013.5 3h-6a2.25 2.25 0 00-2.25 2.25v13.5A2.25 2.25 0 007.5 21h6a2.25 2.25 0 002.25-2.25V15M12 9l-3 3m0 0l3 3m-3-3h12.75"
+            />
+          </svg>
+        </div>
+      </div>
+
+
+
+
+
+
+
+      {/* <div className="flex flex-row-reverse ">
         <button onClick={handleOpen} className="px-3">
           New Barber
         </button>
-      </div>
+      </div> */}
       <TableContainer className="text-center border rounded-lg mt-5">
         <Table>
           <TableHead>
