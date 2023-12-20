@@ -1,4 +1,4 @@
-export interface DataPickerType {
+export type DataPickerType = {
   $D: number;
   $H: number;
   $L: string;

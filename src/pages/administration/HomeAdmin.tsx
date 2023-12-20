@@ -8,7 +8,7 @@ import {
   Box,
   TableBody,
 } from "@mui/material";
-import { barbarsAll } from "../../mock/barbers";
+import { BarberType } from "../../context/userContext.tsx";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext.tsx";
@@ -31,7 +31,8 @@ const style = {
 };
 
 function HomeAdmin() {
-  const [barbars, setBarbars] = useState(barbarsAll);
+  //const {barbars} = useContext(UserContext)
+  //const [barbars, setBarbars] = useState(barbarsAll);
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -41,8 +42,9 @@ function HomeAdmin() {
   const [phone, setPhone] = useState<string>("");
   const [password, setPassword] = useState<string>("");
   const [years, setYears] = useState<number | null>(null);
-  const { user, setUser } = useContext(UserContext);
+  const { user, setUser,barbers } = useContext(UserContext);
   const navigate = useNavigate();
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   useEffect(() => {
     if (!user) {
@@ -171,15 +173,12 @@ function HomeAdmin() {
           </div>
         </Box>
       </Modal>
-      
-
-
-
-
 
       <div className="flex flex-row w-full justify-between mb-7">
-        
-        <div className=" p-2 cursor-pointer mb-3 w-max rounded-md hover:bg-stone-100" onClick={handleOpen}>
+        <div
+          className=" p-2 cursor-pointer mb-3 w-max rounded-md hover:bg-stone-100"
+          onClick={handleOpen}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
@@ -199,7 +198,7 @@ function HomeAdmin() {
         <h1 className="font-bold text-4xl">Admin</h1>
         <div
           className=" p-2 cursor-pointer mb-3 w-max rounded-md hover:bg-stone-100"
-         onClick={handleLogout}
+          onClick={handleLogout}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -217,61 +216,51 @@ function HomeAdmin() {
           </svg>
         </div>
       </div>
-
-
-
-
-
-
-
-      {/* <div className="flex flex-row-reverse ">
-        <button onClick={handleOpen} className="px-3">
-          New Barber
-        </button>
-      </div> */}
-      <TableContainer className="text-center border rounded-lg mt-5">
-        <Table>
-          <TableHead>
-            <TableRow className="font-medium">
-              <TableCell align="center">
-                <span className="font-bold">Name</span>
-              </TableCell>
-              <TableCell align="center">
-                <span className="font-bold">Last Name</span>
-              </TableCell>
-              <TableCell align="center">
-                <span className="font-bold">email</span>
-              </TableCell>
-              <TableCell align="center">
-                <span className="font-bold">phone</span>
-              </TableCell>
-              <TableCell align="center">
-                <span className="font-bold">Delete</span>
-              </TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {barbars.map((barbar) => {
-              return (
-                <TableRow key={barbar.id}>
-                  <TableCell align="center">{barbar.firstName}</TableCell>
-                  <TableCell align="center">{barbar.lastName}</TableCell>
-                  <TableCell align="center">{barbar.email}</TableCell>
-                  <TableCell align="center">{barbar.phone}</TableCell>
-                  <TableCell align="center">
-                    <button
-                      onClick={(e) => deleteBarber(e, barbar.id)}
-                      className="p-3"
-                    >
-                      Delete
-                    </button>
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {barbers && (
+        <TableContainer className="text-center border rounded-lg mt-5">
+          <Table>
+            <TableHead>
+              <TableRow className="font-medium">
+                <TableCell align="center">
+                  <span className="font-bold">Name</span>
+                </TableCell>
+                <TableCell align="center">
+                  <span className="font-bold">Last Name</span>
+                </TableCell>
+                <TableCell align="center">
+                  <span className="font-bold">email</span>
+                </TableCell>
+                <TableCell align="center">
+                  <span className="font-bold">phone</span>
+                </TableCell>
+                <TableCell align="center">
+                  <span className="font-bold">Delete</span>
+                </TableCell> 
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {barbers.map((barbar: BarberType) => {
+                return (
+                  <TableRow key={barbar.id}>
+                    <TableCell align="center">{barbar.name}</TableCell>
+                    <TableCell align="center">{barbar.surname}</TableCell>
+                    <TableCell align="center">{barbar.email}</TableCell>
+                    <TableCell align="center">{barbar.phone}</TableCell>
+                    <TableCell align="center">
+                      <button
+                        onClick={(e) => deleteBarber(e, barbar.id)}
+                        className="p-3"
+                      >
+                        Delete
+                      </button>
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
+        </TableContainer>
+      )}
     </div>
   );
 }
