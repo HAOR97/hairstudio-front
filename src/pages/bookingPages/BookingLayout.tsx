@@ -22,7 +22,7 @@ const style = {
 };
 
 function BookingLayout() {
-  const { user, setUser, reservations } = useContext(UserContext);
+  const { user, setUser, reservations, setReservations } = useContext(UserContext);
   const {
     stage,
     setService,
@@ -154,7 +154,7 @@ function BookingLayout() {
           user && (
             <div className=" flex flex-col ">
               <Profile profil={user}></Profile>
-                <BookingTable reservations={reservations} show="frizer" />
+                <BookingTable reservations={reservations} setReservations={setReservations} show="frizer" />
             </div>
           )
         ) : (

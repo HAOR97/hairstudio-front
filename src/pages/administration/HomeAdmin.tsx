@@ -8,10 +8,15 @@ import {
   Box,
   TableBody,
 } from "@mui/material";
-import { BarberType } from "../../context/userContext.tsx";
+//import { BarberType } from "../../context/userContext.tsx";
 import { useNavigate } from "react-router-dom";
 import { useContext, useEffect, useState } from "react";
 import { UserContext } from "../../context/userContext.tsx";
+import { UserType } from "../bookingPages/RegisterPage.tsx";
+import { inputsNewUser as inputs } from "../../mock/InputsNewUser.tsx";
+import InputRegister from "../../components/InputRegister.tsx";
+import { BookingContext } from "../../context/bookingContext.tsx";
+
 
 type deleteBarberType = (
   e: React.MouseEvent<HTMLButtonElement, MouseEvent>,
@@ -26,25 +31,31 @@ const style = {
   width: 400,
   bgcolor: "background.paper",
   boxShadow: 24,
-  p: 4,
   borderRadius: "5px",
 };
 
+
 function HomeAdmin() {
-  //const {barbars} = useContext(UserContext)
-  //const [barbars, setBarbars] = useState(barbarsAll);
+  
+  const {id_salon} = useContext(BookingContext)
+  const flag = "frizer";
+  const [values, setValues] = useState({
+    name: "",
+    surname: "",
+    flag: flag,
+    phone: "",
+    email: "",
+    smena: "prva",
+    password: "",
+    id_salon: id_salon,
+  });
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const [firstName, setFirstName] = useState<string>("");
-  const [lastName, setLastName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [phone, setPhone] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
-  const [years, setYears] = useState<number | null>(null);
-  const { user, setUser,barbers } = useContext(UserContext);
+  const { user, setUser, barbers, setBarbers } = useContext(UserContext);
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [error, setError] = useState(false);
+  const [errorText, setErrorText] = useState("");
 
   useEffect(() => {
     if (!user) {
@@ -58,33 +69,73 @@ function HomeAdmin() {
     setUser(null);
   };
 
-  const handleNewBarber = (
-    e: React.MouseEvent<HTMLButtonElement, MouseEvent>
-  ) => {
+  const deleteBarber: deleteBarberType = async (e, id) => {
     e.preventDefault();
-    if (
-      firstName == "" ||
-      lastName == "" ||
-      email == "" ||
-      phone == "" ||
-      password == "" ||
-      !years
-    ) {
-      console.log("unesita sva polja");
-    } else {
-      console.log(firstName, lastName, phone, email, years);
-      console.log(barbars);
-      setBarbars((b) => [
-        ...b,
-        { firstName, lastName, phone, email, years, id: barbars.length + 1 },
-      ]);
+    console.log(id);
+    try {
+      const respond = await fetch(
+        `http://127.0.0.1:8000/api/AdminPanel/deleteBarbers/${id}`,
+        {
+          method: "DELETE",
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+      const result = await respond.json();
+      if (result.status != 200) {
+        throw new Error();
+      }
+      const filterBarbers = barbers?.filter((b) => b.id != id) || [];
+      setBarbers(filterBarbers);
+    } catch (err) {
+      console.log(err);
     }
   };
 
-  const deleteBarber: deleteBarberType = (e, id) => {
+  const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setValues({ ...values, [e.target.name]: e.target.value });
+  };
+
+  const handleCreateNewStaff = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const filterBarbers = barbars.filter((b) => b.id != id);
-    setBarbars(filterBarbers);
+    console.log(values)
+    try {
+      const respond = await fetch(
+        "http://127.0.0.1:8000/api/AdminPanel/create/barbers",
+        {
+          method: "POST",
+          body: JSON.stringify(values),
+          headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+        }
+      );
+
+      if (!respond.ok) {
+        if (respond.status < 500 && respond.status > 400) {
+          setError(true);
+          setErrorText(
+            "Something information is wrong or the email already exists !"
+          );
+        }
+        if (respond.status >= 500) {
+          setError(true);
+          setErrorText("Something is wrong with server !");
+        }
+
+        throw new Error();
+      } else {
+        const result = await respond.json();
+        console.log(result.data)
+        setBarbers((prevBarbers) => [...(prevBarbers || []), result.data]);
+        setOpen(false)
+      }
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
@@ -97,7 +148,10 @@ function HomeAdmin() {
       >
         <Box sx={style}>
           <div className="flex flex-col justify-center items-center rounded">
-            <form className="flex space-y-4 flex-col bg-white md:w-96 md:h-max w-screen h-screen p-8 rounded-xl ">
+            <form
+              onSubmit={handleCreateNewStaff}
+              className="flex space-y-4 flex-col bg-white md:w-96 md:h-max w-screen h-screen p-8 rounded-xl "
+            >
               <div className="flex flex-row justify-end mb-4">
                 <div onClick={handleClose} className="cursor-pointer p-0">
                   <svg
@@ -116,59 +170,14 @@ function HomeAdmin() {
                   </svg>
                 </div>
               </div>
-              <div className="flex flex-row justify-between">
-                <div className="mr-1 w-6/12">
-                  <label>First name*</label>
-                  <input
-                    className="w-full border border-solid border-neutral-300 rounded-md h-10 pl-2"
-                    type="text"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </div>
-                <div className="ml-1 w-6/12">
-                  <label>Last name*</label>
-                  <input
-                    className="w-full border border-solid border-neutral-300 rounded-md h-10 pl-2"
-                    type="text"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div className="flex flex-col">
-                <label>E-mail*</label>
-                <input
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label>Phone*</label>
-                <input
-                  type="tel"
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label>Years*</label>
-                <input
-                  type="tel"
-                  value={years ? years : ""}
-                  onChange={(e) => setYears(parseInt(e.target.value))}
-                />
-              </div>
-              <div className="flex flex-col">
-                <label>Password*</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                />
-              </div>
-              <button onClick={handleNewBarber}>Continue</button>
+                <div className="text-center text-xl font-bold">New staff</div>
+              {inputs.map((input) => (
+                <InputRegister key={input.id} {...input} onChange={onChange} />
+              ))}
+              {error && (
+                <span className="text-red-500 text-sm ">{errorText}</span>
+              )}
+              <button>Continue</button>
             </form>
           </div>
         </Box>
@@ -183,14 +192,13 @@ function HomeAdmin() {
             xmlns="http://www.w3.org/2000/svg"
             fill="none"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            strokeWidth={1.5}
             stroke="currentColor"
-            data-slot="icon"
             className="w-8 h-8"
           >
             <path
-              stroke-linecap="round"
-              stroke-linejoin="round"
+              strokeLinecap="round"
+              strokeLinejoin="round"
               d="M18 7.5v3m0 0v3m0-3h3m-3 0h-3m-2.25-4.125a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0ZM3 19.235v-.11a6.375 6.375 0 0 1 12.75 0v.109A12.318 12.318 0 0 1 9.374 21c-2.331 0-4.512-.645-6.374-1.766Z"
             />
           </svg>
@@ -235,11 +243,11 @@ function HomeAdmin() {
                 </TableCell>
                 <TableCell align="center">
                   <span className="font-bold">Delete</span>
-                </TableCell> 
+                </TableCell>
               </TableRow>
             </TableHead>
             <TableBody>
-              {barbers.map((barbar: BarberType) => {
+              {barbers.map((barbar: UserType) => {
                 return (
                   <TableRow key={barbar.id}>
                     <TableCell align="center">{barbar.name}</TableCell>

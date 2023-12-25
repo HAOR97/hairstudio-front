@@ -18,7 +18,7 @@ type handleTimeType = (
 
 const BookingTime: React.FC<BookingTimeType> = ({ reserved, load, shift }) => {
   const { time, setTime, service } = useContext(BookingContext);
-  const [filterShift, setFilterShift] = useState([{time:"test"}]);
+  const [filterShift, setFilterShift] = useState([{ time: "test" }]);
 
   const handleTime: handleTimeType = (e, t) => {
     if (!service) {
@@ -36,18 +36,24 @@ const BookingTime: React.FC<BookingTimeType> = ({ reserved, load, shift }) => {
       console.log("service ili reserved je null");
     }
   }, [reserved, shift, service]);
-
   return (
     <>
-      <span>Select time:</span>
-      <div className="grid grid-cols-3 gap-2">
+      {load || (filterShift.length !== 0 && <span>Select time:</span>)}
+      <div
+        className={
+          load || filterShift.length == 0
+            ? "pt-10 flex align-middle justify-center"
+            : "grid grid-cols-3 gap-2"
+        }
+      >
         {load ? (
-          <div className="pt-10 flex align-middle justify-center">
-            <CircularProgress></CircularProgress>
+          <CircularProgress></CircularProgress>
+        ) : filterShift.length == 0 ? (
+          <div className="text-xl font-bold">
+            Nema slobodnih termina za ove usluge u ovom danu!
           </div>
         ) : (
           filterShift.map((t, index) => {
-
             let active = false;
 
             if (time && time) {

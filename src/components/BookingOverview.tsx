@@ -59,15 +59,15 @@ function BookingOverview({
           if (!response.ok) {
             throw new Error("Network  response was not ok");
           }
-          //const result = await response.json();
-
-            setReservations(prevState => [...(prevState || []),{id: 9,
+          const result = await response.json();
+          console.log(result)
+            setReservations(prevState => [...(prevState || []),{id: result.booking.id,
               id_salons: id_salon,
               id_user: user.id,
               id_frizer: parseInt(staff.id),
               date: date,
               time: time.time,
-              name_frizOrUser: `${user.name} ${user.surname}`,
+              name_frizOrUser: `${staff.name} ${staff.surname}`,
             }]);
           
           setLoading(false);

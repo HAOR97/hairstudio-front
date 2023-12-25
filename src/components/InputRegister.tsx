@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Input } from "../pages/bookingPages/RegisterPage";
+import { InputType } from "../mock/InputsNewUser";
 
-type InputRegisterProp = Input & {
+type InputRegisterProp = InputType & {
   onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
   key: number;
 };

@@ -8,16 +8,15 @@ import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { convertDateYYMMDD } from "../../utils/convertDateFormat.tsx";
-import { terminsTest } from "../../mock/barberTermins";
 import { DataPickerType } from "../../utils/convertDateFormat.tsx";
-import { CircularProgress, fabClasses } from "@mui/material";
+import { CircularProgress } from "@mui/material";
+import { fetchReservationsBarberType } from "../../types/fetchs.tsx";
 
 function HomeBarber() {
-  const { user, setUser, reservations } = useContext(UserContext);
+  const { user, setUser, reservations, setReservations } = useContext(UserContext);
   const [showProfile, setShowProfile] = useState<boolean>(false);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [selectDate, setSelectDate] = useState<string | null>(null);
-  const [termi] = useState(terminsTest);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -38,7 +37,6 @@ function HomeBarber() {
     }
     const newDate = convertDateYYMMDD(date);
     setSelectDate(newDate);
-    console.log(newDate);
 
     try {
       const respond = await fetch(
@@ -51,11 +49,28 @@ function HomeBarber() {
           },
         }
       );
+      console.log(respond)
       if (!respond.ok) {
+        setReservations(null)
         throw new Error();
       }
       const result = await respond.json();
-      console.log(result);
+
+      console.log(result)
+      const allReservations = result.barber.map(
+        (b: fetchReservationsBarberType) => {
+          return {
+            id: b.id,
+            id_salons: 1,
+            id_user: b.id_user,
+            date: b.date,
+            time: b.time,
+            name_frizOrUser: `${b.user_table.name} ${b.user_table.surname}`,
+          };
+        }
+      );
+      setReservations(allReservations);
+
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
@@ -89,7 +104,7 @@ function HomeBarber() {
               />
             </svg>
           </div>
-          <h1 className="font-bold text-4xl">Welcome {user?.name}</h1>
+          <h1 className="font-bold text-4xl text-center">Welcome {user?.name}</h1>
           <div
             className=" p-2 cursor-pointer mb-3 w-max rounded-md hover:bg-stone-100"
             onClick={handleLogout}
@@ -139,7 +154,7 @@ function HomeBarber() {
                 <CircularProgress />
               </div>
             ) : (
-              <BookingTable reservations={termi} show={"user"} />
+              <BookingTable reservations={reservations} setReservations={setReservations} show={"user"} />
             )}
           </>
         )}

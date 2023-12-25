@@ -13,6 +13,7 @@ export type Service = Servic[];
 export type Staff = {
   index:number;
   name: string;
+  surname:string;
   id:string;
 };
 
