@@ -63,6 +63,10 @@ function RegisterPage() {
           const result = await respond.json();
           localStorage.setItem("user-info", JSON.stringify(result));
           if (result.status == 200) {
+            const {email,password} = values
+            const userInfo = {email,password}
+            localStorage.setItem("user-info", JSON.stringify(userInfo));
+          localStorage.setItem("isLoggedIn", "true");
             navigate("/login");
           }
         }
