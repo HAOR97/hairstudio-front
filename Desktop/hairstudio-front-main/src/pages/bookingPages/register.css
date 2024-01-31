@@ -1,6 +1,0 @@
-input:invalid[focused="true"]{
-    border: solid 2px red;
-}
-input:invalid[focused="true"] ~ span{
-    display: block;
-}
