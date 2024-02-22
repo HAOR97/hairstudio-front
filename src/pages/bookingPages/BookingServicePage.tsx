@@ -11,7 +11,7 @@ function BookingServicePage() {
     setStage(1)
   },[setStage])
   
-  console.log("first")
+
   return (
     <div>
       <BookingNav title={"Select service "}/>

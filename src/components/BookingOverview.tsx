@@ -60,7 +60,6 @@ function BookingOverview({
             throw new Error("Network  response was not ok");
           }
           const result = await response.json();
-          console.log(result)
             setReservations(prevState => [...(prevState || []),{id: result.booking.id,
               id_salons: id_salon,
               id_user: user.id,

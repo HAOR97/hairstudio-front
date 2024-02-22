@@ -68,6 +68,7 @@ function BookingLayout() {
   const handleLogout = () => {
     localStorage.removeItem("user-info");
     localStorage.removeItem("isLoggedIn");
+    setReservations(null);
     setUser(null);
   };
 

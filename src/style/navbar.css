@@ -1,0 +1,36 @@
+#navbar div a:hover {
+  color: rgb(250 204 21 / var(--tw-text-opacity));
+  border-color: rgb(250 204 21 / var(--tw-text-opacity));
+}
+#mobile {
+  color: white;
+  display: none;
+}
+@media screen and (max-width: 765px) {
+  #navbar {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    justify-content: flex-start;
+    position: fixed;
+    top: 79px;
+     right: -200px;
+     width: 200px;
+     height: 100vh;
+     background: black;
+     box-shadow: 0 40px 60px rgba(0, 0, 0, 0.1);
+     padding: 40px 0 0 10px;
+     margin-top: 0;
+     transition: 0.3s ease-in-out;
+    }
+    #navbar.active{
+        right: 0;
+    }
+  #navbar2{
+    display: flex;
+    flex-direction: column;
+  }
+  #mobile{
+    display: block;
+  }
+}

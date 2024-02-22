@@ -12,6 +12,8 @@ import { BookingContextProvider } from "./context/bookingContext.tsx";
 import HomeAdmin from "./pages/administration/HomeAdmin.tsx";
 import HomeBarber from "./pages/administration/HomeBarber.tsx";
 import LoginAdministration from "./pages/administration/LoginAdministration.tsx";
+import ContactUS from "./pages/homePage/ContactUS.tsx";
+import AboutUs from "./pages/homePage/AboutUs.tsx";
 
 function App(){
 
@@ -22,6 +24,8 @@ function App(){
         <UserContextProvider>
           <Routes>
             <Route path="/" element={<HomePage />} />
+            <Route path="/AboutUs" element={<AboutUs />} />
+            <Route path="/contact" element={<ContactUS />} />
             <Route path="/register" element={<RegisterPage />} />
             <Route path="/login" element={
               <LoginPage />} />
